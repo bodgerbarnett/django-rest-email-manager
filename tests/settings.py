@@ -1,4 +1,4 @@
-SECRET_KEY = 'fake-key'
+SECRET_KEY = "fake-key"
 
 DATABASES = {
     "default": {
