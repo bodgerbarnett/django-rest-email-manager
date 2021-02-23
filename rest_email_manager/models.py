@@ -18,29 +18,25 @@ def generate_key():
 class EmailAddress(models.Model):
     email = models.EmailField()
     user = models.ForeignKey(
-        User, related_name='emailaddresses', on_delete=models.CASCADE
+        User, related_name="emailaddresses", on_delete=models.CASCADE
     )
 
 
 class EmailAddressVerification(models.Model):
     emailaddress = models.ForeignKey(
-        EmailAddress, related_name='verifications', on_delete=models.CASCADE
+        EmailAddress, related_name="verifications", on_delete=models.CASCADE
     )
     key = models.CharField(max_length=255, default=generate_key)
 
     def send(self):
-        template_name = 'rest_email_manager/emails/verify_email.txt'
+        template_name = "rest_email_manager/emails/verify_email.txt"
         context = {
-            "verification_url": app_settings.EMAIL_VERIFICATION_URL.format(
-                key=self.key
-            )
+            "verification_url": app_settings.EMAIL_VERIFICATION_URL.format(key=self.key)
         }
-        message = render_to_string(
-            context=context,
-            template_name=template_name
-        )
+        message = render_to_string(context=context, template_name=template_name)
         send_mail(
-            'Confirm Email Change',
-            message, settings.DEFAULT_FROM_EMAIL,
-            [self.emailaddress.email]
+            "Confirm Email Change",
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [self.emailaddress.email],
         )

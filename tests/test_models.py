@@ -10,16 +10,14 @@ User = get_user_model()
 
 class TestModels(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('john@beatles.com', 'secret')
+        self.user = User.objects.create_user("john@beatles.com", "secret")
 
     def test_create_emailaddress(self):
-        EmailAddress.objects.create(
-            email='ringo@beatles.com', user=self.user
-        )
+        EmailAddress.objects.create(email="ringo@beatles.com", user=self.user)
 
     def test_create_emailaddressverification(self):
         emailaddress = EmailAddress.objects.create(
-            email='ringo@beatles.com', user=self.user
+            email="ringo@beatles.com", user=self.user
         )
         verification = EmailAddressVerification.objects.create(
             emailaddress=emailaddress
@@ -31,7 +29,7 @@ class TestModels(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["ringo@beatles.com"])
 
-        verification_url = 'https://example.com/verify/{key}'.format(
+        verification_url = "https://example.com/verify/{key}".format(
             key=verification.key
         )
 
