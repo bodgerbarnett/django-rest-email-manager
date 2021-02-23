@@ -1,0 +1,14 @@
+*.py[cod]
+__pycache__
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+htmlcov
