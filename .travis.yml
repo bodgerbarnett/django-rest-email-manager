@@ -1,0 +1,7 @@
+language: python
+
+matrix:
+  fast_finish: true
+
+script:
+  - tox
