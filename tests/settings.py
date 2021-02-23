@@ -20,4 +20,6 @@ TEMPLATES = [
     },
 ]
 
-REST_EMAIL_MANAGER = {"EMAIL_VERIFICATION_URL": "https://example.com/verify/{key}"}
+REST_EMAIL_MANAGER = {
+    "EMAIL_VERIFICATION_URL": "https://example.com/verify/{key}"
+}

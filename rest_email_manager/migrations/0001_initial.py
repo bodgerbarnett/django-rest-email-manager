@@ -53,7 +53,8 @@ class Migration(migrations.Migration):
                 (
                     "key",
                     models.CharField(
-                        default=rest_email_manager.models.generate_key, max_length=255
+                        default=rest_email_manager.models.generate_key,
+                        max_length=255,
                     ),
                 ),
                 (

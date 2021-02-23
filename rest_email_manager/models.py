@@ -31,9 +31,13 @@ class EmailAddressVerification(models.Model):
     def send(self):
         template_name = "rest_email_manager/emails/verify_email.txt"
         context = {
-            "verification_url": app_settings.EMAIL_VERIFICATION_URL.format(key=self.key)
+            "verification_url": app_settings.EMAIL_VERIFICATION_URL.format(
+                key=self.key
+            )
         }
-        message = render_to_string(context=context, template_name=template_name)
+        message = render_to_string(
+            context=context, template_name=template_name
+        )
         send_mail(
             "Confirm Email Change",
             message,
