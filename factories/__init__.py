@@ -22,13 +22,13 @@ class EmailAddressFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
 
     class Meta:
-        model = 'rest_email_manager.EmailAddress'
+        model = "rest_email_manager.EmailAddress"
 
 
 class EmailAddressVerificationFactory(factory.django.DjangoModelFactory):
     """EmailAddressVerification factory."""
 
     class Meta:
-        model = 'rest_email_manager.EmailAddressVerification'
+        model = "rest_email_manager.EmailAddressVerification"
 
     emailaddress = factory.SubFactory(EmailAddressFactory)
