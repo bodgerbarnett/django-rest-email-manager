@@ -1,61 +1,42 @@
-from django.test import TestCase
-from django.contrib.auth import get_user_model
 from django.core import mail
 
-from model_bakery import baker
+from rest_email_manager.models import EmailAddress, EmailAddressVerification
 
 
-User = get_user_model()
+def test_emailaddress(db, email_address):
+    assert isinstance(email_address, EmailAddress)
 
 
-class TestModels(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user("john@beatles.com", "secret")
+def test_emailaddress_not_verified(db, email_address):
+    assert not email_address.verified
 
-    def test_create_emailaddress(self):
-        emailaddress = baker.make(
-            "EmailAddress", email="ringo@beatles.com", user=self.user
-        )
 
-        self.assertFalse(emailaddress.verified)
+def test_emailaddress_send_verification(db, email_address):
+    email_address.send_verification()
+    assert email_address.verifications.count() == 1
+    assert len(mail.outbox) == 1
 
-    def test_create_emailaddressverification(self):
-        emailaddress = baker.make(
-            "EmailAddress", email="ringo@beatles.com", user=self.user
-        )
-        verification = baker.make(
-            "EmailAddressVerification", emailaddress=emailaddress
-        )
 
-        self.assertTrue(len(verification.key) == 64)
+def test_emailaddressverification(db, email_address_verification):
+    assert isinstance(email_address_verification, EmailAddressVerification)
 
-        verification.send()
-        self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].to, ["ringo@beatles.com"])
 
-        verification_url = "https://example.com/verify/{key}".format(
-            key=verification.key
-        )
+def test_emailaddressverification_key(db, email_address_verification):
+    assert len(email_address_verification.key) == 64
 
-        self.assertIn(verification_url, mail.outbox[0].body)
 
-    def test_send_emailaddress_verification(self):
-        emailaddress = baker.make(
-            "EmailAddress", email="ringo@beatles.com", user=self.user
-        )
-        emailaddress.send_verification()
-        self.assertEqual(emailaddress.verifications.count(), 1)
-        self.assertEqual(len(mail.outbox), 1)
+def test_emailaddressverification_send(db, email_address_verification):
+    email_address_verification.send()
+    assert len(mail.outbox) == 1
+    assert mail.outbox[0].to == [email_address_verification.emailaddress.email]
 
-    def test_verify_emailaddress(self):
-        emailaddress = baker.make(
-            "EmailAddress", email="ringo@beatles.com", user=self.user
-        )
-        verification = baker.make(
-            "EmailAddressVerification", emailaddress=emailaddress
-        )
-        verification.verify()
-        self.assertTrue(emailaddress.verified)
+    verification_url = "https://example.com/verify/{key}".format(
+        key=email_address_verification.key
+    )
 
-    def tearDown(self):
-        pass
+    assert verification_url in mail.outbox[0].body
+
+
+def test_emailaddressverification_verify(db, email_address_verification):
+    email_address_verification.verify()
+    assert email_address_verification.emailaddress.verified

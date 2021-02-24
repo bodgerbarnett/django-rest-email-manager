@@ -1,8 +1,8 @@
 black
 flake8
-model-bakery
 pytest
 pytest-django
+pytest-factoryboy
 tox
 tox-gh-actions
 tox-pyenv
