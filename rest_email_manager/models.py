@@ -49,3 +49,8 @@ class EmailAddressVerification(models.Model):
             settings.DEFAULT_FROM_EMAIL,
             [self.emailaddress.email],
         )
+
+    def verify(self):
+        if not self.emailaddress.verified:
+            self.emailaddress.verified = True
+            self.emailaddress.save()
