@@ -13,7 +13,11 @@ class TestModels(TestCase):
         self.user = User.objects.create_user("john@beatles.com", "secret")
 
     def test_create_emailaddress(self):
-        EmailAddress.objects.create(email="ringo@beatles.com", user=self.user)
+        emailaddress = EmailAddress.objects.create(
+            email="ringo@beatles.com", user=self.user
+        )
+
+        self.assertFalse(emailaddress.verified)
 
     def test_create_emailaddressverification(self):
         emailaddress = EmailAddress.objects.create(

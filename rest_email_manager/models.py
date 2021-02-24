@@ -20,6 +20,7 @@ class EmailAddress(models.Model):
     user = models.ForeignKey(
         User, related_name="emailaddresses", on_delete=models.CASCADE
     )
+    verified = models.BooleanField(default=False)
 
 
 class EmailAddressVerification(models.Model):
