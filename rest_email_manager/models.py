@@ -22,6 +22,10 @@ class EmailAddress(models.Model):
     )
     verified = models.BooleanField(default=False)
 
+    def send_verification(self):
+        verification = self.verifications.create()
+        verification.send()
+
 
 class EmailAddressVerification(models.Model):
     emailaddress = models.ForeignKey(

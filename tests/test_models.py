@@ -39,5 +39,13 @@ class TestModels(TestCase):
 
         self.assertIn(verification_url, mail.outbox[0].body)
 
+    def test_send_emailaddress_verification(self):
+        emailaddress = EmailAddress.objects.create(
+            email="ringo@beatles.com", user=self.user
+        )
+        emailaddress.send_verification()
+        self.assertEqual(emailaddress.verifications.count(), 1)
+        self.assertEqual(len(mail.outbox), 1)
+
     def tearDown(self):
         pass
