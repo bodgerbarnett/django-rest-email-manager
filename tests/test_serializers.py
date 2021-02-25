@@ -16,3 +16,10 @@ def test_create_emailaddress(mocker, db, user):
     assert emailaddress.email == data["email"]
 
     mock_send_verification.assert_called()
+
+
+def test_validate_email(mocker, db, user):
+    data = {"email": user.email}
+    serializer = EmailAddressSerializer(data=data)
+    assert not serializer.is_valid()
+    assert set(serializer.errors.keys()) == {"email"}

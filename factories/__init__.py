@@ -11,6 +11,8 @@ faker = FakerFactory.create()
 class UserFactory(factory.django.DjangoModelFactory):
     """User factory."""
 
+    email = faker.email()
+
     class Meta:
         model = get_user_model()
 
