@@ -40,3 +40,7 @@ def test_emailaddressverification_send(db, email_address_verification):
 def test_emailaddressverification_verify(db, email_address_verification):
     email_address_verification.verify()
     assert email_address_verification.emailaddress.verified
+    assert (
+        email_address_verification.emailaddress.user.email
+        == email_address_verification.emailaddress.email
+    )

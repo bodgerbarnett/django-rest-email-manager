@@ -54,3 +54,5 @@ class EmailAddressVerification(models.Model):
         if not self.emailaddress.verified:
             self.emailaddress.verified = True
             self.emailaddress.save()
+            self.emailaddress.user.email = self.emailaddress.email
+            self.emailaddress.user.save()
