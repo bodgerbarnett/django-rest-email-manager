@@ -1,9 +1,11 @@
-from django.core import mail
-
 from rest_email_manager.serializers import EmailAddressSerializer
 
 
-def test_create_emailaddress(db, user):
+def test_create_emailaddress(mocker, db, user):
+    mock_send_verification = mocker.patch(
+        'rest_email_manager.models.EmailAddress.send_verification'
+    )
+
     data = {"email": "test@example.com"}
 
     serializer = EmailAddressSerializer(data=data)
@@ -12,6 +14,5 @@ def test_create_emailaddress(db, user):
     emailaddress = serializer.save(user=user)
 
     assert emailaddress.email == data["email"]
-    assert not emailaddress.verified
 
-    assert len(mail.outbox) == 1
+    mock_send_verification.assert_called()

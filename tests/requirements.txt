@@ -5,6 +5,7 @@ pytest
 pytest-cov
 pytest-django
 pytest-factoryboy
+pytest-mock
 tox
 tox-gh-actions
 tox-pyenv
