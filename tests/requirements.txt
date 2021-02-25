@@ -1,4 +1,5 @@
 black
+djangorestframework
 flake8
 pytest
 pytest-cov
