@@ -3,7 +3,7 @@ from rest_email_manager.serializers import EmailAddressSerializer
 
 def test_create_emailaddress(mocker, db, user):
     mock_send_verification = mocker.patch(
-        'rest_email_manager.models.EmailAddress.send_verification'
+        "rest_email_manager.models.EmailAddress.send_verification"
     )
 
     data = {"email": "test@example.com"}
