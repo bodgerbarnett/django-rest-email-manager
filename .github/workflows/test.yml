@@ -30,3 +30,8 @@ jobs:
         run: |
           black --check .
           flake8
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          name: Python ${{ matrix.python-version }}
