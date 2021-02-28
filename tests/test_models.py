@@ -7,10 +7,6 @@ def test_emailaddress(db, email_address):
     assert isinstance(email_address, EmailAddress)
 
 
-def test_emailaddress_not_verified(db, email_address):
-    assert not email_address.verified
-
-
 def test_emailaddress_send_verification(db, email_address):
     email_address.send_verification()
     assert email_address.verifications.count() == 1
@@ -39,7 +35,6 @@ def test_emailaddressverification_send(db, email_address_verification):
 
 def test_emailaddressverification_verify(db, email_address_verification):
     email_address_verification.verify()
-    assert email_address_verification.emailaddress.verified
     assert (
         email_address_verification.emailaddress.user.email
         == email_address_verification.emailaddress.email

@@ -14,8 +14,8 @@ def test_list_emailaddresses(db, api_client, user, email_address_factory):
     """
     list view returns all user's email addresses
     """
-    email_address_factory(user=user)
-    email_address_factory(user=user)
+    email_address_factory(user=user, email="one@example.com")
+    email_address_factory(user=user, email="two@example.com")
 
     # create an email address for another user
     email_address_factory()
@@ -46,15 +46,15 @@ def test_list_emailaddresses_no_auth(db, api_client):
 
 # 3. create (POST)
 #   - returns new EmailAddress if valid email and password
-#   - TODO sends a new verification if valid email and password but EmailAddress already exists
-#   - TODO fails if not authenticated
-#   - TODO fails if no email
-#   - TODO fails if no password
-#   - TODO fails if wrong password
-#   - TODO fails if another user already has that email
+#   - sends a new verification if valid email and password but EmailAddress already exists
+#   - fails if not authenticated
+#   - fails if no email
+#   - fails if no password
+#   - fails if wrong password
+#   - fails if another user already has that email
 def test_create_emailaddress(db, api_client, user):
     """
-    POST to list view creates new EmailAddress and sends verification email
+    POST to list view creates new EmailAddress
     """
     data = {"email": "newemail@example.com", "current_password": "secret"}
 
@@ -74,6 +74,65 @@ def test_create_emailaddress_no_auth(db, api_client):
     data = {"email": "newemail@example.com", "current_password": "secret"}
     response = api_client.post(list_url, data)
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_create_emailaddress_no_email(db, api_client, user):
+    """
+    POST to list view requires email address
+    """
+    data = {"current_password": "secret"}
+
+    api_client.force_authenticate(user=user)
+    response = api_client.post(list_url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_create_emailaddress_no_password(db, api_client, user):
+    """
+    POST to list view requires password
+    """
+    data = {"email": "newemail@example.com"}
+
+    api_client.force_authenticate(user=user)
+    response = api_client.post(list_url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_create_emailaddress_wrong_password(db, api_client, user):
+    """
+    POST to list view fails if password is wrong
+    """
+    data = {"email": "newemail@example.com", "current_password": "wrong"}
+
+    api_client.force_authenticate(user=user)
+    response = api_client.post(list_url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_create_emailaddress_duplicate_user_email(db, api_client, user, user_factory):
+    """
+    POST to list view fails if email is already set on another user
+    """
+    user_factory(email="newemail@example.com")
+
+    data = {"email": "newemail@example.com", "current_password": "secret"}
+
+    api_client.force_authenticate(user=user)
+    response = api_client.post(list_url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_create_emailaddress_already_exists(db, api_client, user, email_address_factory):
+    """
+    POST to list view sends another verification email if email already exists
+    """
+    email_address_factory(user=user, email="newemail@example.com")
+
+    data = {"email": "newemail@example.com", "current_password": "secret"}
+
+    api_client.force_authenticate(user=user)
+    response = api_client.post(list_url, data)
+    assert response.status_code == status.HTTP_201_CREATED
 
 
 # 4. update (PUT)

@@ -1,7 +1,7 @@
 from rest_framework import permissions, viewsets
 
 from .models import EmailAddress
-from .serializers import EmailAddressSerializer, CreateEmailAddressSerializer
+from .serializers import EmailAddressSerializer
 
 
 class EmailAddressViewSet(viewsets.ModelViewSet):
@@ -11,12 +11,6 @@ class EmailAddressViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.request.user.emailaddresses.all()
-
-    def get_serializer_class(self):
-        if self.action == "create":
-            return CreateEmailAddressSerializer
-
-        return self.serializer_class
 
     def perform_create(self, serializer):
         return serializer.save(user=self.request.user)

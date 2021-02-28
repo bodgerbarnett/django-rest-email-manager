@@ -20,7 +20,9 @@ class EmailAddress(models.Model):
     user = models.ForeignKey(
         User, related_name="emailaddresses", on_delete=models.CASCADE
     )
-    verified = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ['email', 'user']
 
     def send_verification(self):
         verification = self.verifications.create()
@@ -51,8 +53,6 @@ class EmailAddressVerification(models.Model):
         )
 
     def verify(self):
-        if not self.emailaddress.verified:
-            self.emailaddress.verified = True
-            self.emailaddress.save()
-            self.emailaddress.user.email = self.emailaddress.email
-            self.emailaddress.user.save()
+        self.emailaddress.save()
+        self.emailaddress.user.email = self.emailaddress.email
+        self.emailaddress.user.save()
