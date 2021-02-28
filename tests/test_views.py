@@ -45,14 +45,14 @@ def test_list_emailaddresses_no_auth(db, api_client):
 #   - TODO fails if doesn't belong to user
 
 # 3. create (POST)
-#   - returns new EmailAddress and sends verification email if valid email and password
+#   - returns new EmailAddress if valid email and password
 #   - TODO sends a new verification if valid email and password but EmailAddress already exists
 #   - TODO fails if not authenticated
 #   - TODO fails if no email
 #   - TODO fails if no password
-#   - TODO fails if password is not valid
+#   - TODO fails if wrong password
 #   - TODO fails if another user already has that email
-def test_create_emailaddress(mocker, db, api_client, user):
+def test_create_emailaddress(db, api_client, user):
     """
     POST to list view creates new EmailAddress and sends verification email
     """
@@ -66,10 +66,14 @@ def test_create_emailaddress(mocker, db, api_client, user):
 
     assert response.data == serializer.data
 
-    mock_send_verification = mocker.patch(
-        "rest_email_manager.models.EmailAddress.send_verification"
-    )
-    mock_send_verification.assert_called()
+
+def test_create_emailaddress_no_auth(db, api_client):
+    """
+    POST to list view requires authentication
+    """
+    data = {"email": "newemail@example.com", "current_password": "secret"}
+    response = api_client.post(list_url, data)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 # 4. update (PUT)

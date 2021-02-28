@@ -17,12 +17,6 @@ class EmailAddressSerializer(serializers.ModelSerializer):
         model = EmailAddress
         fields = ["email"]
 
-    def create(self, validated_data):
-        validated_data.pop("current_password")
-        instance = super().create(validated_data)
-        instance.send_verification()
-        return instance
-
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():
             self.fail("email_already_exists")
@@ -52,4 +46,8 @@ class CurrentPasswordSerializer(serializers.Serializer):
 
 
 class CreateEmailAddressSerializer(EmailAddressSerializer, CurrentPasswordSerializer):
-    pass
+    def create(self, validated_data):
+        validated_data.pop("current_password")
+        instance = super().create(validated_data)
+        instance.send_verification()
+        return instance
