@@ -21,8 +21,7 @@ class EmailAddressSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["current_password"] = serializers.CharField(
-            write_only=True,
-            style={"input_type": "password"}
+            write_only=True, style={"input_type": "password"}
         )
 
     def validate_email(self, email):
@@ -32,9 +31,7 @@ class EmailAddressSerializer(serializers.ModelSerializer):
         return email
 
     def validate_current_password(self, password):
-        if self.context["request"].user.check_password(
-            password
-        ):
+        if self.context["request"].user.check_password(password):
             return password
         else:
             self.fail("invalid_password")
@@ -43,7 +40,9 @@ class EmailAddressSerializer(serializers.ModelSerializer):
         validated_data.pop("current_password")
 
         try:
-            instance = self.context["request"].user.emailaddresses.get(email=validated_data["email"])
+            instance = self.context["request"].user.emailaddresses.get(
+                email=validated_data["email"]
+            )
         except EmailAddress.DoesNotExist:
             instance = super().create(validated_data)
 

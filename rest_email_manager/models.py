@@ -22,7 +22,7 @@ class EmailAddress(models.Model):
     )
 
     class Meta:
-        unique_together = ['email', 'user']
+        unique_together = ["email", "user"]
 
     def send_verification(self):
         verification = self.verifications.create()

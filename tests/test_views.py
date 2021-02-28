@@ -20,9 +20,7 @@ def test_list_emailaddresses(db, api_client, user, email_address_factory):
     # create an email address for another user
     email_address_factory()
 
-    serializer = EmailAddressSerializer(
-        user.emailaddresses.all(), many=True
-    )
+    serializer = EmailAddressSerializer(user.emailaddresses.all(), many=True)
 
     api_client.force_authenticate(user=user)
     response = api_client.get(list_url)
@@ -46,7 +44,7 @@ def test_list_emailaddresses_no_auth(db, api_client):
 
 # 3. create (POST)
 #   - returns new EmailAddress if valid email and password
-#   - sends a new verification if valid email and password but EmailAddress already exists
+#   - sends a new verification if valid but EmailAddress already exists
 #   - fails if not authenticated
 #   - fails if no email
 #   - fails if no password
@@ -109,7 +107,9 @@ def test_create_emailaddress_wrong_password(db, api_client, user):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_create_emailaddress_duplicate_user_email(db, api_client, user, user_factory):
+def test_create_emailaddress_duplicate_user_email(
+    db, api_client, user, user_factory
+):
     """
     POST to list view fails if email is already set on another user
     """
@@ -122,7 +122,9 @@ def test_create_emailaddress_duplicate_user_email(db, api_client, user, user_fac
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_create_emailaddress_already_exists(db, api_client, user, email_address_factory):
+def test_create_emailaddress_already_exists(
+    db, api_client, user, email_address_factory
+):
     """
     POST to list view sends another verification email if email already exists
     """
