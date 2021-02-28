@@ -1,6 +1,7 @@
 import factory
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 
 from faker import Factory as FakerFactory
 
@@ -12,6 +13,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     """User factory."""
 
     email = faker.email()
+    password = factory.LazyFunction(lambda: make_password("secret"))
 
     class Meta:
         model = get_user_model()

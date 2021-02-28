@@ -20,6 +20,8 @@ TEMPLATES = [
     },
 ]
 
+ROOT_URLCONF = "tests.urls"
+
 REST_EMAIL_MANAGER = {
     "EMAIL_VERIFICATION_URL": "https://example.com/verify/{key}"
 }
