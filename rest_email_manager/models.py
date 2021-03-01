@@ -27,6 +27,7 @@ class EmailAddress(models.Model):
     def send_verification(self):
         verification = self.verifications.create()
         verification.send()
+        verification.send_notification()
 
 
 class EmailAddressVerification(models.Model):
@@ -50,6 +51,24 @@ class EmailAddressVerification(models.Model):
             message,
             settings.DEFAULT_FROM_EMAIL,
             [self.emailaddress.email],
+        )
+
+    def send_notification(self):
+        template_name = (
+            "rest_email_manager/emails/email_update_notification.txt"
+        )
+        context = {
+            "user_email": self.emailaddress.user.email,
+            "new_email": self.emailaddress.email,
+        }
+        message = render_to_string(
+            context=context, template_name=template_name
+        )
+        send_mail(
+            "Account Email Change",
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [self.emailaddress.user.email],
         )
 
     def verify(self):

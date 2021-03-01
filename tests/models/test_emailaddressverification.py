@@ -23,6 +23,22 @@ def test_emailaddressverification_send(db, email_address_verification):
     assert verification_url in mail.outbox[0].body
 
 
+def test_emailaddressverification_send_notification(
+    db, email_address_verification
+):
+    email_address_verification.send_notification()
+    assert len(mail.outbox) == 1
+    assert mail.outbox[0].to == [
+        email_address_verification.emailaddress.user.email
+    ]
+
+    assert (
+        email_address_verification.emailaddress.user.email
+        in mail.outbox[0].body
+    )
+    assert email_address_verification.emailaddress.email in mail.outbox[0].body
+
+
 def test_emailaddressverification_verify(db, email_address_verification):
     email_address_verification.verify()
     assert (

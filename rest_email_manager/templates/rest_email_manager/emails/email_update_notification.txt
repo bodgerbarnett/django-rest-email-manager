@@ -1,0 +1,5 @@
+Hi,
+
+This is a notice to inform you that we've received a request to update your account email from {{ user_email }} to {{ new_email }}.
+
+**If you did not create this request please let us know**.
