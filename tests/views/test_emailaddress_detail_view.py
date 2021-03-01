@@ -69,8 +69,7 @@ def test_put(db, api_client, email_address):
     api_client.force_authenticate(user=email_address.user)
     data = {"email": "another@example.com", "current_password": "secret"}
     response = api_client.put(
-        reverse("emailaddress-detail", kwargs={"pk": email_address.id}),
-        data
+        reverse("emailaddress-detail", kwargs={"pk": email_address.id}), data
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -84,8 +83,7 @@ def test_patch(db, api_client, email_address):
     api_client.force_authenticate(user=email_address.user)
     data = {"email": "another@example.com"}
     response = api_client.patch(
-        reverse("emailaddress-detail", kwargs={"pk": email_address.id}),
-        data
+        reverse("emailaddress-detail", kwargs={"pk": email_address.id}), data
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
