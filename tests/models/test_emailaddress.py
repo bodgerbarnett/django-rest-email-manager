@@ -15,7 +15,9 @@ def test_emailaddress(db, email_address):
     "rest_email_manager.models.EmailAddressVerification.send_notification",
     autospec=True,
 )
-def test_emailaddress_send_verification(mock_send, mock_send_notification, db, email_address):
+def test_emailaddress_send_verification(
+    mock_send, mock_send_notification, db, email_address
+):
     email_address.send_verification()
     assert email_address.verifications.count() == 1
     mock_send.assert_called()
