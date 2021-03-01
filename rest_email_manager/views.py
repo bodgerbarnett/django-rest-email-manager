@@ -8,6 +8,7 @@ class EmailAddressViewSet(viewsets.ModelViewSet):
     queryset = EmailAddress.objects.all()
     serializer_class = EmailAddressSerializer
     permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ["get", "post", "delete", "head", "options"]
 
     def get_queryset(self):
         return self.request.user.emailaddresses.all()

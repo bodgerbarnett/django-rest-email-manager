@@ -9,7 +9,7 @@ from rest_email_manager.serializers import EmailAddressSerializer
 list_url = reverse("emailaddress-list")
 
 
-def test_list_emailaddresses(db, api_client, user, email_address_factory):
+def test_list(db, api_client, user, email_address_factory):
     """
     GET
     returns all user's email addresses
@@ -28,7 +28,7 @@ def test_list_emailaddresses(db, api_client, user, email_address_factory):
     assert response.data == serializer.data
 
 
-def test_list_emailaddresses_no_auth(db, api_client):
+def test_list_no_auth(db, api_client):
     """
     GET
     no authentication
@@ -38,18 +38,11 @@ def test_list_emailaddresses_no_auth(db, api_client):
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-# 2. retrieve (GET)
-#   - TODO returns EmailAddress if exists and owned by user
-#   - TODO fails if not authenticated
-#   - TODO fails if doesn't exist
-#   - TODO fails if doesn't belong to user
-
-
 @mock.patch(
     "rest_email_manager.models.EmailAddress.send_verification",
     autospec=True,
 )
-def test_create_emailaddress(mock_send_verification, db, api_client, user):
+def test_create(mock_send_verification, db, api_client, user):
     """
     POST
     valid email and password
@@ -68,7 +61,7 @@ def test_create_emailaddress(mock_send_verification, db, api_client, user):
     mock_send_verification.assert_called()
 
 
-def test_create_emailaddress_no_auth(db, api_client):
+def test_create_no_auth(db, api_client):
     """
     POST
     no authentication
@@ -79,7 +72,7 @@ def test_create_emailaddress_no_auth(db, api_client):
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_create_emailaddress_no_email(db, api_client, user):
+def test_create_no_email(db, api_client, user):
     """
     POST
     no email
@@ -92,7 +85,7 @@ def test_create_emailaddress_no_email(db, api_client, user):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_create_emailaddress_no_password(db, api_client, user):
+def test_create_no_password(db, api_client, user):
     """
     POST
     no password
@@ -105,7 +98,7 @@ def test_create_emailaddress_no_password(db, api_client, user):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_create_emailaddress_wrong_password(db, api_client, user):
+def test_create_wrong_password(db, api_client, user):
     """
     POST
     wrong password
@@ -118,7 +111,7 @@ def test_create_emailaddress_wrong_password(db, api_client, user):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_create_emailaddress_duplicate_user_email(
+def test_create_duplicate_user_email(
     db, api_client, user, user_factory
 ):
     """
@@ -139,7 +132,7 @@ def test_create_emailaddress_duplicate_user_email(
     "rest_email_manager.models.EmailAddress.send_verification",
     autospec=True,
 )
-def test_create_emailaddress_duplicate_email(
+def test_create_duplicate_email(
     mock_send_verification, db, api_client, user, email_address_factory
 ):
     """
@@ -167,7 +160,7 @@ def test_create_emailaddress_duplicate_email(
     "rest_email_manager.models.EmailAddress.send_verification",
     autospec=True,
 )
-def test_create_emailaddress_already_exists(
+def test_create_already_exists(
     mock_send_verification, db, api_client, user, email_address_factory
 ):
     """
@@ -184,21 +177,3 @@ def test_create_emailaddress_already_exists(
     assert response.status_code == status.HTTP_201_CREATED
 
     mock_send_verification.assert_called()
-
-
-# 4. update (PUT)
-# TODO THINK ABOUT DISABLING THIS
-#   - returns updated EmailAddress and sends verification email if valid email
-#   - fails if not authenticated
-#   - fails if no email
-#   - fails if another user already has that email
-#   - fails if new email is that of another EmailAddress
-
-# 5. partial update (PATCH)
-# TODO THINK ABOUT DISABLING THIS
-#   - fails if not authenticated
-#   - fails if another user already has that email
-
-# 6. destroy (DELETE)
-#   - TODO fails if not authenticated
-#   - TODO fails if it's not owned by the user
