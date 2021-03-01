@@ -65,10 +65,11 @@ class EmailAddressVerificationSerializer(serializers.ModelSerializer):
 
     def validate_key(self, key):
         try:
-            self.instance = EmailAddressVerification.objects.get(
-                key=key,
-                emailaddress__user=self.context["request"].user
-            )
+            self.instance = EmailAddressVerification.objects.exclude(
+                emailaddress__email__in=User.objects.values_list(
+                    "email", flat=True
+                )
+            ).get(key=key, emailaddress__user=self.context["request"].user)
         except EmailAddressVerification.DoesNotExist:
             self.fail("invalid_key")
 

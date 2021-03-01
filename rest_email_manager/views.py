@@ -3,7 +3,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import EmailAddress
-from .serializers import EmailAddressSerializer, EmailAddressVerificationSerializer
+from .serializers import (
+    EmailAddressSerializer,
+    EmailAddressVerificationSerializer,
+)
 
 
 class EmailAddressViewSet(viewsets.ModelViewSet):
@@ -16,7 +19,7 @@ class EmailAddressViewSet(viewsets.ModelViewSet):
         return self.request.user.emailaddresses.all()
 
     def get_serializer_class(self):
-        if self.action == 'verify':
+        if self.action == "verify":
             return EmailAddressVerificationSerializer
 
         return self.serializer_class
