@@ -7,7 +7,7 @@ from rest_email_manager.serializers import EmailAddressSerializer
     "rest_email_manager.models.EmailAddress.send_verification",
     autospec=True,
 )
-def test_create_emailaddress(mock_send_verification, db, user, api_request):
+def test_create(mock_send_verification, db, user, api_request):
     data = {"email": "newemail@example.com", "current_password": "secret"}
 
     api_request.user = user
@@ -27,7 +27,7 @@ def test_create_emailaddress(mock_send_verification, db, user, api_request):
     "rest_email_manager.models.EmailAddress.send_verification",
     autospec=True,
 )
-def test_create_emailaddress_duplicate_email(
+def test_create_duplicate_email(
     mock_send_verification, db, user, email_address_factory, api_request
 ):
     email_address_factory(user=user, email="newemail@example.com")

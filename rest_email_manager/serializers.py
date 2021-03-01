@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
 
-from .models import EmailAddress
+from .models import EmailAddress, EmailAddressVerification
 
 
 User = get_user_model()
@@ -48,3 +48,29 @@ class EmailAddressSerializer(serializers.ModelSerializer):
 
         instance.send_verification()
         return instance
+
+
+class EmailAddressVerificationSerializer(serializers.ModelSerializer):
+    default_error_messages = {
+        "invalid_key": "Invalid verification key",
+    }
+
+    class Meta:
+        model = EmailAddressVerification
+        fields = ["key"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["key"].required = True
+
+    def validate_key(self, key):
+        try:
+            self.instance = EmailAddressVerification.objects.get(
+                key=key,
+                emailaddress__user=self.context["request"].user
+            )
+        except EmailAddressVerification.DoesNotExist:
+            self.fail("invalid_key")
+
+    def save(self):
+        self.instance.verify()

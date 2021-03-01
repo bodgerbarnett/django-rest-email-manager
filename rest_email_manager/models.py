@@ -72,6 +72,5 @@ class EmailAddressVerification(models.Model):
         )
 
     def verify(self):
-        self.emailaddress.save()
         self.emailaddress.user.email = self.emailaddress.email
         self.emailaddress.user.save()
