@@ -22,7 +22,7 @@ Add it to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
         ...
-        'rest_avatar.apps.DjangoRestAvatarConfig',
+        'rest_email_manager',
         ...
     )
 
@@ -30,14 +30,18 @@ Add django-rest-email-manager's URL patterns:
 
 .. code-block:: python
 
-    from rest_avatar import urls as rest_avatar_urls
-
-
     urlpatterns = [
         ...
         path('email-manager/', include('rest_email_manager.urls')),
         ...
     ]
+
+Create django-rest-email-manager's database tables:
+
+.. code-block:: python
+
+    python manage.py migrate
+
 
 Features
 --------
