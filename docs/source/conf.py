@@ -16,7 +16,6 @@
 
 
 # -- Project information -----------------------------------------------------
-import sphinx_rtd_theme
 
 project = "Django REST Email Manager"
 copyright = "2021, Simon Barnett"
