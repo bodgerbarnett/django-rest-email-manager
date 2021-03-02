@@ -1,9 +1,12 @@
+from datetime import timedelta
+
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.crypto import get_random_string
+from django.utils import timezone
 
 from . import app_settings
 
@@ -35,6 +38,11 @@ class EmailAddressVerification(models.Model):
         EmailAddress, related_name="verifications", on_delete=models.CASCADE
     )
     key = models.CharField(max_length=255, default=generate_key)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def is_expired(self):
+        return timezone.now() > self.created_at + timedelta(days=1)
 
     def send(self):
         template_name = "rest_email_manager/emails/verify_email.txt"

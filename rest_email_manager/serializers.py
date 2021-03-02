@@ -53,6 +53,8 @@ class EmailAddressSerializer(serializers.ModelSerializer):
 class EmailAddressVerificationSerializer(serializers.ModelSerializer):
     default_error_messages = {
         "invalid_key": "Invalid verification key",
+        "email_taken": "Email address is already in use",
+        "expired_key": "Verification key has expired",
     }
 
     class Meta:
@@ -65,11 +67,17 @@ class EmailAddressVerificationSerializer(serializers.ModelSerializer):
 
     def validate_key(self, key):
         try:
-            self.instance = EmailAddressVerification.objects.exclude(
-                emailaddress__email__in=User.objects.values_list(
-                    "email", flat=True
-                )
-            ).get(key=key, emailaddress__user=self.context["request"].user)
+            self.instance = EmailAddressVerification.objects.get(
+                key=key, emailaddress__user=self.context["request"].user
+            )
+
+            if User.objects.filter(
+                email=self.instance.emailaddress.email
+            ).exists():
+                self.fail("email_taken")
+
+            if self.instance.is_expired:
+                self.fail("expired_key")
         except EmailAddressVerification.DoesNotExist:
             self.fail("invalid_key")
 
