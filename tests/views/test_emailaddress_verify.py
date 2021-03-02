@@ -18,6 +18,18 @@ def test_verify(db, api_client, email_address_verification):
     assert user.email == email_address_verification.emailaddress.email
 
 
+def test_verify_no_auth(db, api_client, email_address_verification):
+    """
+    POST to verify URL should fail without auth
+    """
+    data = {"key": email_address_verification.key}
+    response = api_client.post(reverse("emailaddress-verify"), data)
+
+    user = email_address_verification.emailaddress.user
+    user.refresh_from_db()
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
 def test_verify_invalid_key(db, api_client, email_address_verification):
     """
     POST to verify URL should fail if given the wrong key
