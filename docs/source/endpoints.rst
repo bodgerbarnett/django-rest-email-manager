@@ -41,3 +41,21 @@ Use this endpoint to delete an email address for the authenticated user.
 |            |                                 |                                  |
 |            |                                 | * ``current_password``           |
 +------------+---------------------------------+----------------------------------+
+
+
+Email Address Verify
+--------------------
+
+Use this endpoint to verify an email address for the authenticated user.
+
+**Default URL**: ``/emails/verify/``
+
++------------+---------------------------------+----------------------------------+
+| Method     |  Request                        | Response                         |
++============+=================================+==================================+
+| ``POST``   | * ``key``                       | ``HTTP_204_NO_CONTENT``          |
+|            |                                 |                                  |
+|            |                                 | ``HTTP_400_BAD_REQUEST``         |
+|            |                                 |                                  |
+|            |                                 | * ``key``                        |
++------------+---------------------------------+----------------------------------+
