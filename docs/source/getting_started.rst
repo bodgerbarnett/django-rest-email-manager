@@ -1,17 +1,22 @@
-.. _installation:
+Getting Started
+===============
 
-Installation
-============
+Available endpoints
+-------------------
+
+* ``/emails/``
+* ``/emails/verify/``
+
 
 Requirements
-============
+------------
 
 * Python >= 3.6
 * Django >= 2.2 and <= 3.1.
 
 
 Getting the Package
-===================
+-------------------
 
 The easiest way to install the package is with pip.
 
@@ -21,7 +26,7 @@ To get the most recent release::
 
 
 Required Configuration
-======================
+----------------------
 
 In :file:`settings.py`, make sure the following settings are present::
 
@@ -49,7 +54,7 @@ Configure ``urls.py``::
 
 
 Post-Installation
-=================
+-----------------
 
 After the app has been installed and configured, the migrations must be run::
 

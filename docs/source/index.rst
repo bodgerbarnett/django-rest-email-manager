@@ -1,7 +1,3 @@
-.. _index:
-
-.. include:: ../../README.rst
-
 =========================
 django-rest-email-manager
 =========================
@@ -10,8 +6,15 @@ django-rest-email-manager
    :maxdepth: 2
    :caption: Basics
 
-   installation
-   configuration
+   introduction
+   getting_started
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Settings & API
+
+   settings
+   endpoints
 
 
 Indices and tables

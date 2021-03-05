@@ -4,7 +4,7 @@ from .views import EmailAddressViewSet
 
 
 router = routers.DefaultRouter()
-router.register("", EmailAddressViewSet)
+router.register("emails", EmailAddressViewSet)
 
 
 urlpatterns = router.urls
