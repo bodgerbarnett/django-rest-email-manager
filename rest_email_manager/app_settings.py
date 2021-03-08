@@ -32,6 +32,26 @@ class AppSettings(object):
         """
         return self._setting("EMAIL_VERIFICATION_URL", "")
 
+    @property
+    def SEND_VERIFICATION_EMAIL(self):
+        """
+        The function that sends the verification email
+        """
+        return self._setting(
+            "SEND_VERIFICATION_EMAIL",
+            "rest_email_manager.utils.send_verification_email",
+        )
+
+    @property
+    def SEND_NOTIFICATION_EMAIL(self):
+        """
+        The function that sends the notification email
+        """
+        return self._setting(
+            "SEND_NOTIFICATION_EMAIL",
+            "rest_email_manager.utils.send_notification_email",
+        )
+
 
 app_settings = AppSettings()
 app_settings.__name__ = __name__

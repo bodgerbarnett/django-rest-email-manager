@@ -1,12 +1,10 @@
 from datetime import timedelta
 
 from django.db import models
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.utils.crypto import get_random_string
 from django.utils import timezone
+from django.utils.module_loading import import_string
 
 from . import app_settings
 
@@ -45,39 +43,23 @@ class EmailAddressVerification(models.Model):
         return timezone.now() > self.created_at + timedelta(days=1)
 
     def send(self):
-        template_name = "rest_email_manager/emails/verify_email.txt"
         context = {
+            "user": self.emailaddress.user,
+            "new_email": self.emailaddress.email,
             "verification_url": app_settings.EMAIL_VERIFICATION_URL.format(
                 key=self.key
-            )
+            ),
         }
-        message = render_to_string(
-            context=context, template_name=template_name
-        )
-        send_mail(
-            "Confirm Email Change",
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [self.emailaddress.email],
-        )
+        to = [self.emailaddress.email]
+        import_string(app_settings.SEND_VERIFICATION_EMAIL)(context, to)
 
     def send_notification(self):
-        template_name = (
-            "rest_email_manager/emails/email_update_notification.txt"
-        )
         context = {
-            "user_email": self.emailaddress.user.email,
+            "user": self.emailaddress.user,
             "new_email": self.emailaddress.email,
         }
-        message = render_to_string(
-            context=context, template_name=template_name
-        )
-        send_mail(
-            "Account Email Change",
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [self.emailaddress.user.email],
-        )
+        to = [self.emailaddress.user.email]
+        import_string(app_settings.SEND_NOTIFICATION_EMAIL)(context, to)
 
     def verify(self):
         self.emailaddress.user.email = self.emailaddress.email
