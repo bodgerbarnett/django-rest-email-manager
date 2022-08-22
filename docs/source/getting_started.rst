@@ -39,10 +39,6 @@ In :file:`settings.py`, make sure the following settings are present::
       'rest_email_manager',
    ]
 
-   REST_EMAIL_MANAGER = {
-      'EMAIL_VERIFICATION_URL': 'https://example.com/verify/{key}',
-   }
-
 
 Configure ``urls.py``::
 

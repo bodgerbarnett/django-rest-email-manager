@@ -2,31 +2,26 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
 
-from .models import EmailAddress, EmailAddressVerification
+from .models import EmailAddress
 
 
 User = get_user_model()
 
 
 class EmailAddressSerializer(serializers.ModelSerializer):
-    default_error_messages = {
-        "email_already_exists": "A user with this email already exists",
-        "invalid_password": "Invalid password",
-    }
+    current_password = serializers.CharField(
+        write_only=True, style={"input_type": "password"}
+    )
 
     class Meta:
         model = EmailAddress
-        fields = ["email"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["current_password"] = serializers.CharField(
-            write_only=True, style={"input_type": "password"}
-        )
+        fields = ["email", "current_password"]
 
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():
-            self.fail("email_already_exists")
+            raise serializers.ValidationError(
+                "A user with this email already exists"
+            )
 
         return email
 
@@ -34,52 +29,39 @@ class EmailAddressSerializer(serializers.ModelSerializer):
         if self.context["request"].user.check_password(password):
             return password
         else:
-            self.fail("invalid_password")
+            raise serializers.ValidationError("Invalid password")
 
     def create(self, validated_data):
         validated_data.pop("current_password")
 
         try:
-            instance = self.context["request"].user.emailaddresses.get(
+            return self.context["request"].user.emailaddresses.get(
                 email=validated_data["email"]
             )
         except EmailAddress.DoesNotExist:
-            instance = super().create(validated_data)
-
-        instance.send_verification()
-        return instance
+            return super().create(validated_data)
 
 
-class EmailAddressVerificationSerializer(serializers.ModelSerializer):
-    default_error_messages = {
-        "invalid_key": "Invalid verification key",
-        "email_taken": "Email address is already in use",
-        "expired_key": "Verification key has expired",
-    }
-
-    class Meta:
-        model = EmailAddressVerification
-        fields = ["key"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["key"].required = True
+class EmailAddressKeySerializer(serializers.Serializer):
+    key = serializers.CharField()
 
     def validate_key(self, key):
         try:
-            self.instance = EmailAddressVerification.objects.get(
-                key=key, emailaddress__user=self.context["request"].user
+            self.emailaddress = EmailAddress.objects.get(
+                key=key, user=self.context["request"].user
             )
 
-            if User.objects.filter(
-                email=self.instance.emailaddress.email
-            ).exists():
-                self.fail("email_taken")
+            if User.objects.filter(email=self.emailaddress.email).exists():
+                raise serializers.ValidationError(
+                    "Email address is already in use"
+                )
 
-            if self.instance.is_expired:
-                self.fail("expired_key")
-        except EmailAddressVerification.DoesNotExist:
-            self.fail("invalid_key")
+            if self.emailaddress.is_expired:
+                raise serializers.ValidationError(
+                    "Verification key has expired"
+                )
+        except EmailAddress.DoesNotExist:
+            raise serializers.ValidationError("Invalid verification key")
 
     def save(self):
-        self.instance.verify()
+        self.emailaddress.verify()

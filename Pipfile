@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pytest-django = "*"
+django = "*"
+pytest-factoryboy = "*"
+djangorestframework = "*"
+flake8 = "*"
+black = "*"
+pytest-cov = "*"
+pytest-mock = "*"
+tox = "*"
+tox-pyenv = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

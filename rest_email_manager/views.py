@@ -1,31 +1,29 @@
-from rest_framework import permissions, status, viewsets
+from django.utils import timezone
+
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import EmailAddress
-from .serializers import (
-    EmailAddressSerializer,
-    EmailAddressVerificationSerializer,
-)
+from .settings import rest_email_manager_settings
 
 
-class EmailAddressViewSet(viewsets.ModelViewSet):
-    queryset = EmailAddress.objects.all()
-    serializer_class = EmailAddressSerializer
+class EmailAddressViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ["get", "post", "delete", "head", "options"]
-
-    def get_queryset(self):
-        return self.request.user.emailaddresses.all()
+    queryset = EmailAddress.objects.all()
+    serializer_class = rest_email_manager_settings.EMAIL_ADDRESS_SERIALIZER
 
     def get_serializer_class(self):
         if self.action == "verify":
-            return EmailAddressVerificationSerializer
+            return rest_email_manager_settings.EMAIL_ADDRESS_KEY_SERIALIZER
 
         return self.serializer_class
 
     def perform_create(self, serializer):
-        return serializer.save(user=self.request.user)
+        emailaddress = serializer.save(
+            user=self.request.user, created_at=timezone.now()
+        )
+        emailaddress.send_emails(self.request)
 
     @action(["post"], detail=False)
     def verify(self, request, *args, **kwargs):

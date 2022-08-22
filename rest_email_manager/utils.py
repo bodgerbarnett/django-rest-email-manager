@@ -13,13 +13,13 @@ def send_email(subject, template_name, context, to):
     )
 
 
-def send_verification_email(context, to):
+def send_verification_email(request, context, to):
     subject = "Confirm Email Change"
     template_name = "rest_email_manager/emails/verify_email.txt"
     send_email(subject, template_name, context, to)
 
 
-def send_notification_email(context, to):
+def send_notification_email(request, context, to):
     subject = "Account Email Change"
     template_name = "rest_email_manager/emails/email_update_notification.txt"
     send_email(subject, template_name, context, to)

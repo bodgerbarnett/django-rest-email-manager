@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password
 
 from faker import Factory as FakerFactory
 
+from rest_email_manager.models import EmailAddress
 
 faker = FakerFactory.create()
 
@@ -27,13 +28,4 @@ class EmailAddressFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
 
     class Meta:
-        model = "rest_email_manager.EmailAddress"
-
-
-class EmailAddressVerificationFactory(factory.django.DjangoModelFactory):
-    """EmailAddressVerification factory."""
-
-    emailaddress = factory.SubFactory(EmailAddressFactory)
-
-    class Meta:
-        model = "rest_email_manager.EmailAddressVerification"
+        model = EmailAddress
