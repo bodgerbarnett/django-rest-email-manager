@@ -43,7 +43,7 @@ class EmailAddress(models.Model):
             "user": self.user,
             "new_email": self.email,
             "verification_url": rest_email_manager_settings.EMAIL_VERIFICATION_URL.format(
-                key=self.key
+                key=self.key  # fmt: skip
             ),
         }
         to = [self.email]
