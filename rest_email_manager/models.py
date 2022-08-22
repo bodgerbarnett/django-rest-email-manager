@@ -39,12 +39,11 @@ class EmailAddress(models.Model):
         self.send_notification_email(request)
 
     def send_verification_email(self, request):
+        verification_url = rest_email_manager_settings.EMAIL_VERIFICATION_URL
         context = {
             "user": self.user,
             "new_email": self.email,
-            "verification_url": rest_email_manager_settings.EMAIL_VERIFICATION_URL.format(
-                key=self.key  # fmt: skip
-            ),
+            "verification_url": verification_url.format(key=self.key),
         }
         to = [self.email]
         rest_email_manager_settings.SEND_VERIFICATION_EMAIL(
