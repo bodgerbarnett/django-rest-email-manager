@@ -3,13 +3,15 @@ from django.utils.module_loading import import_string
 
 USER_SETTINGS = getattr(settings, "REST_EMAIL_MANAGER", None)
 
+# fmt: off
 DEFAULTS = {
-    "EMAIL_ADDRESS_SERIALIZER": "rest_email_manager.serializers.EmailAddressSerializer",  # fmt: skip
-    "EMAIL_ADDRESS_KEY_SERIALIZER": "rest_email_manager.serializers.EmailAddressKeySerializer",  # fmt: skip
+    "EMAIL_ADDRESS_SERIALIZER": "rest_email_manager.serializers.EmailAddressSerializer",
+    "EMAIL_ADDRESS_KEY_SERIALIZER": "rest_email_manager.serializers.EmailAddressKeySerializer",
     "EMAIL_VERIFICATION_URL": "account/email/verify/{key}",
-    "SEND_VERIFICATION_EMAIL": "rest_email_manager.utils.send_verification_email",  # fmt: skip
-    "SEND_NOTIFICATION_EMAIL": "rest_email_manager.utils.send_notification_email",  # fmt: skip
+    "SEND_VERIFICATION_EMAIL": "rest_email_manager.utils.send_verification_email",
+    "SEND_NOTIFICATION_EMAIL": "rest_email_manager.utils.send_notification_email",
 }
+# fmt: on
 
 IMPORT_STRINGS = [
     "EMAIL_ADDRESS_SERIALIZER",
