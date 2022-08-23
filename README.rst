@@ -48,4 +48,3 @@ Features
 
 * REST endpoints for allowing users to change their email address.
 * Updated email addresses will require verification before they are set on the user.
-* Verifications expire after a configurable amount of time.
